@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'legends 管理系统' // 标题
+const name = defaultSettings.title || 'Spring Cloud Legends 管理系统' // 标题
 
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 
@@ -32,7 +32,13 @@ module.exports = {
     port: port,
     open: true,
     proxy: {
-
+      '/api/flow': {
+        target: `http://192.181.4.157:9090/`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/flow':''
+        }
+      },
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         target: `http://192.181.4.157:7070/`,
@@ -40,7 +46,8 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]:''
         }
-      }
+      },
+     
     },
     disableHostCheck: true
   },

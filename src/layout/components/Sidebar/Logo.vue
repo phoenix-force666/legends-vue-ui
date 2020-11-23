@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: 'legends管理系统',
+      title: 'Spring Cloud Legends 管理系统',
       logo: logoImg
     }
   }
