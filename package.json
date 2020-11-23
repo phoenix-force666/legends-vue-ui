@@ -1,7 +1,7 @@
 {
   "name": "ruoyi",
   "version": "2.1.0",
-  "description": "legends管理系统",
+  "description": "Spring Cloud Legends 管理系统",
   "author": "legends",
   "license": "legends",
   "scripts": {
@@ -63,7 +63,15 @@
     "vue-router": "3.0.2",
     "vue-splitpane": "1.0.4",
     "vuedraggable": "2.20.0",
-    "vuex": "3.1.0"
+    "vuex": "3.1.0",
+    "bpmn-js-properties-panel": "^0.30.0",
+    "camunda-bpmn-moddle": "^3.2.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-polyfill": "^6.26.0",
+    "bpmn-js": "^3.4.1",
+    "ids": "^1.0.0",
+    "moment": "^2.24.0",
+    "vue-i18n": "^8.11.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",
