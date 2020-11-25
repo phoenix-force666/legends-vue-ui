@@ -197,6 +197,7 @@ export default {
     submit(){
       //获取from 参数
       var　parameter=htmlFormUtils.getParameter(".form-control");
+      console.log("sss",parameter)
       //组装请求报文
       var params={};
       params["variables"]=parameter;
