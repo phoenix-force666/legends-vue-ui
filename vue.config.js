@@ -32,9 +32,11 @@ module.exports = {
     host: '0.0.0.0',
     port: port,
     open: true,
+    //流程引擎
     proxy: {
       '/api/flow': {
-        target: `http://192.181.4.157:9090/`,
+        // target: `http://192.181.4.157:9090/`,
+        target: `http://192.181.4.157:8080/`,
         changeOrigin: true,
         pathRewrite: {
           '^/api/flow':''

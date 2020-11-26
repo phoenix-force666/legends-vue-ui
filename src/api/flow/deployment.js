@@ -7,14 +7,14 @@ export const deploymentService = {
       params.name = ''
     }
     return request({
-      url: '/flow/rest/deployment',
+      url: '/flow/engine-rest/deployment',
       method: 'get',
       params
     }, { indices: false })
   },
   count: function(params) {
     return request({
-      url: '/flow/rest/deployment/count',
+      url: '/flow/engine-rest/deployment/count',
       method: 'get',
       params
     })
@@ -26,7 +26,7 @@ export const deploymentService = {
     param.append('deployment-source', 'process application')
     param.append('deployment-name', filename)
     param.append('file', new Blob([xml], { type: 'text/xml' }), filename)
-    return request.post('/flow/rest/deployment/create', param, { headers: { 'Content-Type': 'multipart/form-data' }})
+    return request.post('/flow/engine-rest/deployment/create', param, { headers: { 'Content-Type': 'multipart/form-data' }})
   },
   redeploy: function(xml, filename, tenantId, id) {
     const param = new FormData()
@@ -36,13 +36,13 @@ export const deploymentService = {
     param.append('deployment-source', 'process application')
     param.append('deployment-name', filename)
     param.append('file', new Blob([xml], { type: 'text/xml' }), filename)
-    return request.post('/flow/rest//deployment/' + id + '/redeploy', param, { headers: { 'Content-Type': 'multipart/form-data' }})
+    return request.post('/flow/engine-rest//deployment/' + id + '/redeploy', param, { headers: { 'Content-Type': 'multipart/form-data' }})
   },
   resources: function(id) {
-    return request.get('/flow/rest/deployment/' + id + '/resources')
+    return request.get('/flow/engine-rest/deployment/' + id + '/resources')
   },
   delete: function(id) {
-    return request.delete('/flow/rest/deployment/' + id)
+    return request.delete('/flow/engine-rest/deployment/' + id)
   }
 }
 

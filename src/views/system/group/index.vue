@@ -116,7 +116,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改【请填写功能名称】对话框 -->
+    <!-- 添加或修改用户组对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="组名称" prop="groupName">
@@ -161,7 +161,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 【请填写功能名称】表格数据
+      // 用户组表格数据
       groupList: [],
       // 弹出层标题
       title: "",
@@ -187,7 +187,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询【请填写功能名称】列表 */
+    /** 查询用户组列表 */
     getList() {
       this.loading = true;
       listGroup(this.queryParams).then(response => {
@@ -234,7 +234,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加【请填写功能名称】";
+      this.title = "添加用户组";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -243,7 +243,7 @@ export default {
       getGroup(groupId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改【请填写功能名称】";
+        this.title = "修改用户组";
       });
     },
     /** 提交按钮 */
@@ -273,7 +273,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const groupIds = row.groupId || this.ids;
-      this.$confirm('是否确认删除【请填写功能名称】编号为"' + groupIds + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除用户组编号为"' + groupIds + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

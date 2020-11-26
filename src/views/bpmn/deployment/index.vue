@@ -160,7 +160,7 @@ export default {
       /* 如果有部署id说明部署过*/
 
       deploymentService.resources(item.id).then(function(res) {
-        request({ url: '/flow/rest/deployment/' + item.id + '/resources/' + res[0].id + '/data', method: 'get' }).then(function(xml) {
+        request({ url: '/flow/engine-rest/deployment/' + item.id + '/resources/' + res[0].id + '/data', method: 'get' }).then(function(xml) {
           _this.$nextTick(() => {
             _this.$refs.bpmndrawer.initCanvas(xml, item.id, item.name)
           })
