@@ -6,21 +6,21 @@ export const definitionsService = {
       params.name = ''
     }
     return request({
-      url: '/flow/rest/process-definition',
+      url: '/flow/engine-rest/process-definition',
       method: 'get',
       params
     })
   },
   count: function(params) {
     return request({
-      url: '/flow/rest/process-definition/count',
+      url: '/flow/engine-rest/process-definition/count',
       method: 'get',
       params
     })
   },
   getBPMNXML: function(id) {
     return request({
-      url: '/flow/rest//process-definition/' + id + '/xml',
+      url: '/flow/engine-rest/process-definition/' + id + '/xml',
       method: 'get'
     })
   }
