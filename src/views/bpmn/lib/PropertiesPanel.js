@@ -1,12 +1,12 @@
 'use strict'
 // import $ from 'jquery'
-import Vue from 'vue'
-import userpicker from '../sys/userpicker'
-const v = new Vue({
-  components: {
-    'userpicker': userpicker
-  }
-})
+// import Vue from 'vue'
+// import userpicker from '../sys/userpicker'
+// const v = new Vue({
+//   components: {
+//     'userpicker': userpicker
+//   }
+// })
 var domify = require('min-dom').domify
 var domQuery = require('min-dom').query
 var domQueryAll = require('min-dom').queryAll
@@ -238,6 +238,7 @@ PropertiesPanel.$inject = [
   'canvas'
 ]
 
+// export default  PropertiesPanel
 module.exports = PropertiesPanel
 
 PropertiesPanel.prototype._init = function(config) {
