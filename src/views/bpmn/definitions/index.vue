@@ -6,6 +6,7 @@
         <el-input v-model="listQuery.name" :placeholder="$t('flowModel.name')" style="width: 120px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <el-button type="primary" icon="el-icon-search" class="filter-item" @click="handleFilter">查 询</el-button>
         <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="resetForm">重 置</el-button>
+        <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="aa">aa</el-button>
       </div>
 
       <el-table
@@ -172,6 +173,12 @@ export default {
         this.listQuery.start_time = data[0]
         this.listQuery.end_time = data[1]
       }
+    },
+    aa(){
+      // definitionsService.aa;
+      const {aa} = definitionsService
+      const bb = new aa()
+      bb()
     },
     handleAddOrEdit(item) {
       var _this = this
