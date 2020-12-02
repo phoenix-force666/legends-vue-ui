@@ -40,6 +40,7 @@
     "url": "https://gitee.com/y_project/RuoYi-Vue.git"
   },
   "dependencies": {
+    "@bj-nsc/functions": "^1.0.28",
     "@riophae/vue-treeselect": "0.4.0",
     "axios": "0.18.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
@@ -59,6 +60,7 @@
     "js-cookie": "2.2.0",
     "jsencrypt": "3.0.0-rc.1",
     "loader": "^2.1.1",
+    "md5": "^2.3.0",
     "moment": "^2.24.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
