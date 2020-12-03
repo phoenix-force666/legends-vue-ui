@@ -181,54 +181,72 @@
     />
 
     <!-- 添加或修改表单定义对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="租户" prop="tenantId">
-          <el-input v-model="form.tenantId" placeholder="请输入租户" />
-        </el-form-item>
-        <el-form-item label="表单定义名称" prop="definitionName">
-          <el-input v-model="form.definitionName" placeholder="请输入表单定义名称" />
-        </el-form-item>
-        <el-form-item label="表单定义key" prop="definitionKey">
-          <el-input v-model="form.definitionKey" placeholder="请输入表单定义key" />
-        </el-form-item>
-        <el-form-item label="表单定义描述" prop="definitionDesc">
-          <el-input v-model="form.definitionDesc" placeholder="请输入表单定义描述" />
-        </el-form-item>
-        <el-form-item label="表单部署ID" prop="deploymentId">
-          <el-input v-model="form.deploymentId" placeholder="请输入表单部署ID" />
-        </el-form-item>
-        <el-form-item label="表单数据ID(存放在mongodb中）" prop="dataId">
-          <el-input v-model="form.dataId" placeholder="请输入表单数据ID(存放在mongodb中）" />
-        </el-form-item>
-        <el-form-item label="表单定义分类" prop="categoryId">
-          <el-input v-model="form.categoryId" placeholder="请输入表单定义分类" />
-        </el-form-item>
-        <el-form-item label="创建人" prop="createUser">
-          <el-input v-model="form.createUser" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="修改人" prop="updateUser">
-          <el-input v-model="form.updateUser" placeholder="请输入修改人" />
-        </el-form-item>
-        <el-form-item label="版本" prop="version">
-          <el-input v-model="form.version" placeholder="请输入版本" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+    <el-dialog :title="title" :visible.sync="open"  fullscreen="true"  append-to-body>
+
+      <el-steps :active="active" finish-status="success">
+        <el-step title="基本信息"></el-step>
+        <el-step title="表单设计"></el-step>
+        <el-step title="流程设计"></el-step>
+      </el-steps>
+
+      <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
+      <!-- 表单基本信息 -->
+      <div class="info" v-if="active==1">
+        <el-form ref="form" :model="form" :rules="rules" label-width="200px">
+          <el-form-item label="租户" prop="tenantId">
+            <el-input v-model="form.tenantId" placeholder="请输入租户" />
+          </el-form-item>
+          <el-form-item label="表单定义名称" prop="definitionName">
+            <el-input v-model="form.definitionName" placeholder="请输入表单定义名称" />
+          </el-form-item>
+          <el-form-item label="表单定义key" prop="definitionKey">
+            <el-input v-model="form.definitionKey" placeholder="请输入表单定义key" />
+          </el-form-item>
+          <el-form-item label="表单定义描述" prop="definitionDesc">
+            <el-input v-model="form.definitionDesc" placeholder="请输入表单定义描述" />
+          </el-form-item>
+          <el-form-item label="表单部署ID" prop="deploymentId">
+            <el-input v-model="form.deploymentId" placeholder="请输入表单部署ID" />
+          </el-form-item>
+          <el-form-item label="表单数据ID(存放在mongodb中）" prop="dataId">
+            <el-input v-model="form.dataId" placeholder="请输入表单数据ID(存放在mongodb中）" />
+          </el-form-item>
+          <el-form-item label="表单定义分类" prop="categoryId">
+            <el-input v-model="form.categoryId" placeholder="请输入表单定义分类" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
       </div>
+
+    <!-- 表单设计 -->
+    <div class="info" v-if="active==2">
+     <formGenerator></formGenerator>
+    </div>
+    <!-- 完成-->
+    <div class="info" v-if="active==3">
+      
+    </div>
+  
+
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { listDefinition, getDefinition, delDefinition, addDefinition, updateDefinition } from "@/api/formEngine/definition";
+import formGenerator from "@/views/tool/build/index";
 
 export default {
   name: "Definition",
+  components:{
+    formGenerator
+  },
   data() {
     return {
+      active:1,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -282,6 +300,10 @@ export default {
         this.loading = false;
       });
     },
+    //下一步
+    next() {
+        if (this.active++ > 2) this.active = 0;
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -326,7 +348,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加表单定义";
+      this.title = "表单定义";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
