@@ -78,6 +78,12 @@
 
     <div class="center-board">
       <div class="action-bar">
+        <!-- <el-button icon="el-icon-video-play" type="text" @click="run">
+          运行
+        </el-button> -->
+        <el-button icon="el-icon-view" type="text" @click="showJson">
+          查看json
+        </el-button>
         <el-button icon="el-icon-download" type="text" @click="download">
           导出vue文件
         </el-button>
@@ -124,6 +130,18 @@
       :show-field="!!drawingList.length"
       @tag-change="tagChange"
     />
+    <form-drawer
+      :visible.sync="drawerVisible"
+      :form-data="formData"
+      size="100%"
+      :generate-conf="generateConf"
+    />
+    <json-drawer
+      size="60%"
+      :visible.sync="jsonDrawerVisible"
+      :json-str="JSON.stringify(formData)"
+      @refresh="refreshJson"
+    />
 
     <code-type-dialog
       :visible.sync="dialogVisible"
@@ -141,6 +159,9 @@ import { saveAs } from 'file-saver'
 import beautifier from 'js-beautify'
 import ClipboardJS from 'clipboard'
 import render from '@/utils/generator/render'
+import JsonDrawer from './JsonDrawer'
+import FormDrawer from './FormDrawer'
+
 import RightPanel from './RightPanel'
 import {
   inputComponents,
@@ -149,7 +170,7 @@ import {
   formConf
 } from '@/utils/generator/config'
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase
+  exportDefault, beautifierConf, isNumberStr, titleCase ,deepCloneTwo
 } from '@/utils/index'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
@@ -171,7 +192,9 @@ export default {
     render,
     RightPanel,
     CodeTypeDialog,
-    DraggableItem
+    JsonDrawer,
+    DraggableItem,
+    FormDrawer
   },
   data() {
     return {
@@ -183,6 +206,7 @@ export default {
       layoutComponents,
       labelWidth: 100,
       drawingList: drawingDefalut,
+      jsonDrawerVisible: false,
       drawingData: {},
       activeId: drawingDefalut[0].formId,
       drawerVisible: false,
@@ -231,6 +255,22 @@ export default {
     })
   },
   methods: {
+     refreshJson(data) {
+      this.drawingList = deepClone(data.fields)
+      delete data.fields
+      this.formConf = data
+    },
+      showJson() {
+
+      this.AssembleFormData()
+      this.jsonDrawerVisible = true
+    },
+      AssembleFormData() {
+      this.formData = {
+        fields: deepCloneTwo(this.drawingList),
+        ...this.formConf
+      }
+    },
     activeFormItem(element) {
       this.activeData = element
       this.activeId = element.formId
@@ -787,3 +827,4 @@ $lighterBlue: #409EFF;
 }
 
 </style>
+
