@@ -2,9 +2,7 @@
   <div class="container">
     <div class="left-board">
       <div class="logo-wrapper">
-        <div class="logo">
-          <img :src="logo" alt="logo"> Form Generator
-        </div>
+        <div class="logo"><img :src="logo" alt="logo" /> Form Generator</div>
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
@@ -21,7 +19,9 @@
             @end="onEnd"
           >
             <div
-              v-for="(element, index) in inputComponents" :key="index" class="components-item"
+              v-for="(element, index) in inputComponents"
+              :key="index"
+              class="components-item"
               @click="addComponent(element)"
             >
               <div class="components-body">
@@ -58,12 +58,18 @@
             <svg-icon icon-class="component" /> 布局型组件
           </div>
           <draggable
-            class="components-draggable" :list="layoutComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd"
+            class="components-draggable"
+            :list="layoutComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
           >
             <div
-              v-for="(element, index) in layoutComponents" :key="index" class="components-item"
+              v-for="(element, index) in layoutComponents"
+              :key="index"
+              class="components-item"
               @click="addComponent(element)"
             >
               <div class="components-body">
@@ -87,10 +93,20 @@
         <el-button icon="el-icon-download" type="text" @click="download">
           导出vue文件
         </el-button>
-        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
+        <el-button
+          class="copy-btn-main"
+          icon="el-icon-document-copy"
+          type="text"
+          @click="copy"
+        >
           复制代码
         </el-button>
-        <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
+        <el-button
+          class="delete-btn"
+          icon="el-icon-delete"
+          type="text"
+          @click="empty"
+        >
           清空
         </el-button>
       </div>
@@ -102,7 +118,12 @@
             :disabled="formConf.disabled"
             :label-width="formConf.labelWidth + 'px'"
           >
-            <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
+            <draggable
+              class="drawing-board"
+              :list="drawingList"
+              :animation="340"
+              group="componentsGroup"
+            >
               <draggable-item
                 v-for="(element, index) in drawingList"
                 :key="element.renderKey"
@@ -149,42 +170,50 @@
       :show-file-name="showFileName"
       @confirm="generate"
     />
-    <input id="copyNode" type="hidden">
+    <input id="copyNode" type="hidden" />
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
-import { saveAs } from 'file-saver'
-import beautifier from 'js-beautify'
-import ClipboardJS from 'clipboard'
-import render from '@/utils/generator/render'
-import JsonDrawer from './JsonDrawer'
-import FormDrawer from './FormDrawer'
-
-import RightPanel from './RightPanel'
+import draggable from "vuedraggable";
+import loadBeautifier from "@/utils/loadBeautifier";
+import { saveAs } from "file-saver";
+import beautifier from "js-beautify";
+import ClipboardJS from "clipboard";
+import render from "@/utils/generator/render";
+import JsonDrawer from "@/views/tool/build/JsonDrawer";
+import FormDrawer from "@/views/tool/build/FormDrawer";
+import RightPanel from "@/views/tool/build/RightPanel";
 import {
   inputComponents,
   selectComponents,
   layoutComponents,
   formConf
-} from '@/utils/generator/config'
+} from "@/utils/generator/config";
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase ,deepCloneTwo,deepClone
-} from '@/utils/index'
+  exportDefault,
+  beautifierConf,
+  isNumberStr,
+  titleCase,
+  deepCloneTwo,
+  deepClone
+} from "@/utils/index";
 import {
-  makeUpHtml, vueTemplate, vueScript, cssStyle
-} from '@/utils/generator/html'
-import { makeUpJs } from '@/utils/generator/js'
-import { makeUpCss } from '@/utils/generator/css'
-import drawingDefalut from '@/utils/generator/drawingDefalut'
-import logo from '@/assets/logo/logo.png'
-import CodeTypeDialog from './CodeTypeDialog'
-import DraggableItem from './DraggableItem'
+  makeUpHtml,
+  vueTemplate,
+  vueScript,
+  cssStyle
+} from "@/utils/generator/html";
+import { makeUpJs } from "@/utils/generator/js";
+import { makeUpCss } from "@/utils/generator/css";
+import drawingDefalut from "@/utils/generator/drawingDefalut";
+import logo from "@/assets/logo/logo.png";
+import CodeTypeDialog from "@/views/tool/build/CodeTypeDialog";
+import DraggableItem from "@/views/tool/build/DraggableItem";
 
-const emptyActiveData = { style: {}, autosize: {} }
-let oldActiveId
-let tempActiveData
+const emptyActiveData = { style: {}, autosize: {} };
+let oldActiveId;
+let tempActiveData;
 
 export default {
   components: {
@@ -215,235 +244,259 @@ export default {
       generateConf: null,
       showFileName: false,
       activeData: drawingDefalut[0]
-    }
+    };
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     // eslint-disable-next-line func-names
-    'activeData.label': function (val, oldVal) {
+    "activeData.label": function(val, oldVal) {
       if (
-        this.activeData.placeholder === undefined
-        || !this.activeData.tag
-        || oldActiveId !== this.activeId
+        this.activeData.placeholder === undefined ||
+        !this.activeData.tag ||
+        oldActiveId !== this.activeId
       ) {
-        return
+        return;
       }
-      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
+      this.activeData.placeholder =
+        this.activeData.placeholder.replace(oldVal, "") + val;
     },
     activeId: {
       handler(val) {
-        oldActiveId = val
+        oldActiveId = val;
       },
       immediate: true
     }
   },
   mounted() {
-    const clipboard = new ClipboardJS('#copyNode', {
+    const clipboard = new ClipboardJS("#copyNode", {
       text: trigger => {
-        const codeStr = this.generateCode()
+        const codeStr = this.generateCode();
         this.$notify({
-          title: '成功',
-          message: '代码已复制到剪切板，可粘贴。',
-          type: 'success'
-        })
-        return codeStr
+          title: "成功",
+          message: "代码已复制到剪切板，可粘贴。",
+          type: "success"
+        });
+        return codeStr;
       }
-    })
-    clipboard.on('error', e => {
-      this.$message.error('代码复制失败')
-    })
+    });
+    clipboard.on("error", e => {
+      this.$message.error("代码复制失败");
+    });
   },
   methods: {
-     refreshJson(data) {
-      this.drawingList = deepClone(data.fields)
-      delete data.fields
-      this.formConf = data
+    refreshJson(data) {
+      this.drawingList = deepClone(data.fields);
+      delete data.fields;
+      this.formConf = data;
     },
-      showJson() {
-      this.AssembleFormData()
-      this.jsonDrawerVisible = true
+    getJSON() {
+      loadBeautifier(btf => {
+        let beautifier = btf;
+        this.beautifierJson = beautifier.js(
+          JSON.stringify({
+            fields: deepCloneTwo(this.drawingList),
+            ...this.formConf
+          }),
+          beautifierConf.js
+        );
+         console.log(this.beautifierJson);
+      });
     },
-      AssembleFormData() {
+    showJson() {
+        this.getJSON()
+            
+      //   this.AssembleFormData()
+      //   this.jsonDrawerVisible = true
+    },
+    AssembleFormData() {
       this.formData = {
         fields: deepCloneTwo(this.drawingList),
         ...this.formConf
-      }
-      
+      };
+      //   console.log(this,formData)
     },
     activeFormItem(element) {
-      this.activeData = element
-      this.activeId = element.formId
+      this.activeData = element;
+      this.activeId = element.formId;
     },
     onEnd(obj, a) {
       if (obj.from !== obj.to) {
-        this.activeData = tempActiveData
-        this.activeId = this.idGlobal
+        this.activeData = tempActiveData;
+        this.activeId = this.idGlobal;
       }
     },
     addComponent(item) {
-      const clone = this.cloneComponent(item)
-      this.drawingList.push(clone)
-      this.activeFormItem(clone)
+      const clone = this.cloneComponent(item);
+      this.drawingList.push(clone);
+      this.activeFormItem(clone);
     },
     cloneComponent(origin) {
-      const clone = JSON.parse(JSON.stringify(origin))
-      clone.formId = ++this.idGlobal
-      clone.span = formConf.span
-      clone.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      if (!clone.layout) clone.layout = 'colFormItem'
-      if (clone.layout === 'colFormItem') {
-        clone.vModel = `field${this.idGlobal}`
-        clone.placeholder !== undefined && (clone.placeholder += clone.label)
-        tempActiveData = clone
-      } else if (clone.layout === 'rowFormItem') {
-        delete clone.label
-        clone.componentName = `row${this.idGlobal}`
-        clone.gutter = this.formConf.gutter
-        tempActiveData = clone
+      const clone = JSON.parse(JSON.stringify(origin));
+      clone.formId = ++this.idGlobal;
+      clone.span = formConf.span;
+      clone.renderKey = +new Date(); // 改变renderKey后可以实现强制更新组件
+      if (!clone.layout) clone.layout = "colFormItem";
+      if (clone.layout === "colFormItem") {
+        clone.vModel = `field${this.idGlobal}`;
+        clone.placeholder !== undefined && (clone.placeholder += clone.label);
+        tempActiveData = clone;
+      } else if (clone.layout === "rowFormItem") {
+        delete clone.label;
+        clone.componentName = `row${this.idGlobal}`;
+        clone.gutter = this.formConf.gutter;
+        tempActiveData = clone;
       }
-      return tempActiveData
+      return tempActiveData;
     },
     AssembleFormData() {
       this.formData = {
         fields: JSON.parse(JSON.stringify(this.drawingList)),
         ...this.formConf
-      }
+      };
     },
     generate(data) {
-      const func = this[`exec${titleCase(this.operationType)}`]
-      this.generateConf = data
-      func && func(data)
+      const func = this[`exec${titleCase(this.operationType)}`];
+      this.generateConf = data;
+      func && func(data);
     },
     execRun(data) {
-      this.AssembleFormData()
-      this.drawerVisible = true
+      this.AssembleFormData();
+      this.drawerVisible = true;
     },
     execDownload(data) {
-      const codeStr = this.generateCode()
-      const blob = new Blob([codeStr], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, data.fileName)
+      const codeStr = this.generateCode();
+      const blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, data.fileName);
     },
     execCopy(data) {
-      document.getElementById('copyNode').click()
+      document.getElementById("copyNode").click();
     },
     empty() {
-      this.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(
+      this.$confirm("确定要清空所有组件吗？", "提示", { type: "warning" }).then(
         () => {
-          this.drawingList = []
+          this.drawingList = [];
         }
-      )
+      );
     },
     drawingItemCopy(item, parent) {
-      let clone = JSON.parse(JSON.stringify(item))
-      clone = this.createIdAndKey(clone)
-      parent.push(clone)
-      this.activeFormItem(clone)
+      let clone = JSON.parse(JSON.stringify(item));
+      clone = this.createIdAndKey(clone);
+      parent.push(clone);
+      this.activeFormItem(clone);
     },
     createIdAndKey(item) {
-      item.formId = ++this.idGlobal
-      item.renderKey = +new Date()
-      if (item.layout === 'colFormItem') {
-        item.vModel = `field${this.idGlobal}`
-      } else if (item.layout === 'rowFormItem') {
-        item.componentName = `row${this.idGlobal}`
+      item.formId = ++this.idGlobal;
+      item.renderKey = +new Date();
+      if (item.layout === "colFormItem") {
+        item.vModel = `field${this.idGlobal}`;
+      } else if (item.layout === "rowFormItem") {
+        item.componentName = `row${this.idGlobal}`;
       }
       if (Array.isArray(item.children)) {
-        item.children = item.children.map(childItem => this.createIdAndKey(childItem))
+        item.children = item.children.map(childItem =>
+          this.createIdAndKey(childItem)
+        );
       }
-      return item
+      return item;
     },
     drawingItemDelete(index, parent) {
-      parent.splice(index, 1)
+      parent.splice(index, 1);
       this.$nextTick(() => {
-        const len = this.drawingList.length
+        const len = this.drawingList.length;
         if (len) {
-          this.activeFormItem(this.drawingList[len - 1])
+          this.activeFormItem(this.drawingList[len - 1]);
         }
-      })
+      });
     },
     generateCode() {
-      const { type } = this.generateConf
-      this.AssembleFormData()
-      const script = vueScript(makeUpJs(this.formData, type))
-      const html = vueTemplate(makeUpHtml(this.formData, type))
-      const css = cssStyle(makeUpCss(this.formData))
-      return beautifier.html(html + script + css, beautifierConf.html)
+      const { type } = this.generateConf;
+      this.AssembleFormData();
+      const script = vueScript(makeUpJs(this.formData, type));
+      const html = vueTemplate(makeUpHtml(this.formData, type));
+      const css = cssStyle(makeUpCss(this.formData));
+      return beautifier.html(html + script + css, beautifierConf.html);
     },
     download() {
-      this.dialogVisible = true
-      this.showFileName = true
-      this.operationType = 'download'
+      this.dialogVisible = true;
+      this.showFileName = true;
+      this.operationType = "download";
     },
     run() {
-      this.dialogVisible = true
-      this.showFileName = false
-      this.operationType = 'run'
+      this.dialogVisible = true;
+      this.showFileName = false;
+      this.operationType = "run";
     },
     copy() {
-      this.dialogVisible = true
-      this.showFileName = false
-      this.operationType = 'copy'
+      this.dialogVisible = true;
+      this.showFileName = false;
+      this.operationType = "copy";
     },
     tagChange(newTag) {
-      newTag = this.cloneComponent(newTag)
-      newTag.vModel = this.activeData.vModel
-      newTag.formId = this.activeId
-      newTag.span = this.activeData.span
-      delete this.activeData.tag
-      delete this.activeData.tagIcon
-      delete this.activeData.document
+      newTag = this.cloneComponent(newTag);
+      newTag.vModel = this.activeData.vModel;
+      newTag.formId = this.activeId;
+      newTag.span = this.activeData.span;
+      delete this.activeData.tag;
+      delete this.activeData.tagIcon;
+      delete this.activeData.document;
       Object.keys(newTag).forEach(key => {
-        if (this.activeData[key] !== undefined
-          && typeof this.activeData[key] === typeof newTag[key]) {
-          newTag[key] = this.activeData[key]
+        if (
+          this.activeData[key] !== undefined &&
+          typeof this.activeData[key] === typeof newTag[key]
+        ) {
+          newTag[key] = this.activeData[key];
         }
-      })
-      this.activeData = newTag
-      this.updateDrawingList(newTag, this.drawingList)
+      });
+      this.activeData = newTag;
+      this.updateDrawingList(newTag, this.drawingList);
     },
     updateDrawingList(newTag, list) {
-      const index = list.findIndex(item => item.formId === this.activeId)
+      const index = list.findIndex(item => item.formId === this.activeId);
       if (index > -1) {
-        list.splice(index, 1, newTag)
+        list.splice(index, 1, newTag);
       } else {
         list.forEach(item => {
-          if (Array.isArray(item.children)) this.updateDrawingList(newTag, item.children)
-        })
+          if (Array.isArray(item.children))
+            this.updateDrawingList(newTag, item.children);
+        });
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss'>
-body, html{
+<style lang="scss">
+body,
+html {
   margin: 0;
   padding: 0;
   background: #fff;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-input, textarea{
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+input,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
-/deep/ .v-model{
-    display:none !important;
+/deep/ .v-model {
+  display: none !important;
 }
 
-.editor-tabs{
+.editor-tabs {
   background: #121315;
-  .el-tabs__header{
+  .el-tabs__header {
     margin: 0;
     border-bottom-color: #121315;
-    .el-tabs__nav{
+    .el-tabs__nav {
       border-color: #121315;
     }
   }
-  .el-tabs__item{
+  .el-tabs__item {
     height: 32px;
     line-height: 32px;
     color: #888a8e;
@@ -452,15 +505,15 @@ input, textarea{
     margin-right: 5px;
     user-select: none;
   }
-  .el-tabs__item.is-active{
+  .el-tabs__item.is-active {
     background: #1e1e1e;
-    border-bottom-color: #1e1e1e!important;
+    border-bottom-color: #1e1e1e !important;
     color: #fff;
   }
-  .el-icon-edit{
+  .el-icon-edit {
     color: #f1fa8c;
   }
-  .el-icon-document{
+  .el-icon-document {
     color: #a95812;
   }
 }
@@ -476,24 +529,24 @@ input, textarea{
   overflow-x: hidden !important;
   margin-bottom: 0 !important;
 }
-.center-tabs{
-  .el-tabs__header{
-    margin-bottom: 0!important;
+.center-tabs {
+  .el-tabs__header {
+    margin-bottom: 0 !important;
   }
-  .el-tabs__item{
+  .el-tabs__item {
     width: 50%;
     text-align: center;
   }
-  .el-tabs__nav{
+  .el-tabs__nav {
     width: 100%;
   }
 }
-.reg-item{
+.reg-item {
   padding: 12px 6px;
   background: #f8f8f8;
   position: relative;
   border-radius: 4px;
-  .close-btn{
+  .close-btn {
     position: absolute;
     right: -6px;
     top: -6px;
@@ -508,16 +561,16 @@ input, textarea{
     z-index: 1;
     cursor: pointer;
     font-size: 12px;
-    &:hover{
-      background: rgba(210, 23, 23, 0.5)
+    &:hover {
+      background: rgba(210, 23, 23, 0.5);
     }
   }
-  & + .reg-item{
+  & + .reg-item {
     margin-top: 18px;
   }
 }
-.action-bar{
-  & .el-button+.el-button {
+.action-bar {
+  & .el-button + .el-button {
     margin-left: 15px;
   }
   & i {
@@ -528,42 +581,42 @@ input, textarea{
   }
 }
 
-.custom-tree-node{
+.custom-tree-node {
   width: 100%;
   font-size: 14px;
-  .node-operation{
+  .node-operation {
     float: right;
   }
-  i[class*="el-icon"] + i[class*="el-icon"]{
+  i[class*="el-icon"] + i[class*="el-icon"] {
     margin-left: 6px;
   }
-  .el-icon-plus{
-    color: #409EFF;
+  .el-icon-plus {
+    color: #409eff;
   }
-  .el-icon-delete{
+  .el-icon-delete {
     color: #157a0c;
   }
 }
 
-.left-scrollbar .el-scrollbar__view{
+.left-scrollbar .el-scrollbar__view {
   overflow-x: hidden;
 }
 
-.el-rate{
+.el-rate {
   display: inline-block;
   vertical-align: text-top;
 }
-.el-upload__tip{
+.el-upload__tip {
   line-height: 1.2;
 }
 
 $selectedColor: #f6f7ff;
-$lighterBlue: #409EFF;
+$lighterBlue: #409eff;
 
 .container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 900px;
 }
 
 .components-list {
@@ -577,14 +630,14 @@ $lighterBlue: #409EFF;
     transition: transform 0ms !important;
   }
 }
-.components-draggable{
+.components-draggable {
   padding-bottom: 20px;
 }
-.components-title{
+.components-title {
   font-size: 14px;
   color: #222;
   margin: 6px 2px;
-  .svg-icon{
+  .svg-icon {
     color: #666;
     font-size: 18px;
   }
@@ -597,7 +650,7 @@ $lighterBlue: #409EFF;
   cursor: move;
   border: 1px dashed $selectedColor;
   border-radius: 3px;
-  .svg-icon{
+  .svg-icon {
     color: #777;
     font-size: 15px;
   }
@@ -617,7 +670,7 @@ $lighterBlue: #409EFF;
   top: 0;
   height: 100vh;
 }
-.left-scrollbar{
+.left-scrollbar {
   height: calc(100vh - 42px);
   overflow: hidden;
 }
@@ -634,7 +687,7 @@ $lighterBlue: #409EFF;
   margin: 0 350px 0 260px;
   box-sizing: border-box;
 }
-.empty-info{
+.empty-info {
   position: absolute;
   top: 46%;
   left: 0;
@@ -644,27 +697,27 @@ $lighterBlue: #409EFF;
   color: #ccb1ea;
   letter-spacing: 4px;
 }
-.action-bar{
+.action-bar {
   position: relative;
   height: 42px;
   text-align: right;
   padding: 0 15px;
-  box-sizing: border-box;;
+  box-sizing: border-box;
   border: 1px solid #f1e8e8;
   border-top: none;
   border-left: none;
-  .delete-btn{
-    color: #F56C6C;
+  .delete-btn {
+    color: #f56c6c;
   }
 }
-.logo-wrapper{
+.logo-wrapper {
   position: relative;
   height: 42px;
   background: #fff;
   border-bottom: 1px solid #f1e8e8;
   box-sizing: border-box;
 }
-.logo{
+.logo {
   position: absolute;
   left: 12px;
   top: 6px;
@@ -673,16 +726,16 @@ $lighterBlue: #409EFF;
   font-weight: 600;
   font-size: 17px;
   white-space: nowrap;
-  > img{
+  > img {
     width: 30px;
     height: 30px;
     vertical-align: top;
   }
-  .github{
+  .github {
     display: inline-block;
     vertical-align: sub;
     margin-left: 15px;
-    > img{
+    > img {
       height: 22px;
     }
   }
@@ -725,32 +778,33 @@ $lighterBlue: #409EFF;
     background-color: $selectedColor;
   }
   .active-from-item {
-    & > .el-form-item{
+    & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+    & > .drawing-item-copy,
+    & > .drawing-item-delete {
       display: initial;
     }
-    & > .component-name{
+    & > .component-name {
       color: $lighterBlue;
     }
   }
-  .el-form-item{
+  .el-form-item {
     margin-bottom: 15px;
   }
 }
-.drawing-item{
+.drawing-item {
   position: relative;
   cursor: move;
-  &.unfocus-bordered:not(.activeFromItem) > div:first-child  {
+  &.unfocus-bordered:not(.activeFromItem) > div:first-child {
     border: 1px dashed #ccc;
   }
-  .el-form-item{
+  .el-form-item {
     padding: 12px 10px;
   }
 }
-.drawing-row-item{
+.drawing-row-item {
   position: relative;
   cursor: move;
   box-sizing: border-box;
@@ -761,19 +815,19 @@ $lighterBlue: #409EFF;
   .drawing-row-item {
     margin-bottom: 2px;
   }
-  .el-col{
+  .el-col {
     margin-top: 22px;
   }
-  .el-form-item{
+  .el-form-item {
     margin-bottom: 0;
   }
-  .drag-wrapper{
+  .drag-wrapper {
     min-height: 80px;
   }
-  &.active-from-item{
+  &.active-from-item {
     border: 1px dashed $lighterBlue;
   }
-  .component-name{
+  .component-name {
     position: absolute;
     top: 0;
     left: 0;
@@ -783,17 +837,20 @@ $lighterBlue: #409EFF;
     padding: 0 6px;
   }
 }
-.drawing-item, .drawing-row-item{
+.drawing-item,
+.drawing-row-item {
   &:hover {
-    & > .el-form-item{
+    & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+    & > .drawing-item-copy,
+    & > .drawing-item-delete {
       display: initial;
     }
   }
-  & > .drawing-item-copy, & > .drawing-item-delete{
+  & > .drawing-item-copy,
+  & > .drawing-item-delete {
     display: none;
     position: absolute;
     top: -10px;
@@ -807,27 +864,25 @@ $lighterBlue: #409EFF;
     cursor: pointer;
     z-index: 1;
   }
-  & > .drawing-item-copy{
+  & > .drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
     background: #fff;
-    &:hover{
+    &:hover {
       background: $lighterBlue;
       color: #fff;
     }
   }
-  & > .drawing-item-delete{
+  & > .drawing-item-delete {
     right: 24px;
-    border-color: #F56C6C;
-    color: #F56C6C;
+    border-color: #f56c6c;
+    color: #f56c6c;
     background: #fff;
-    &:hover{
-      background: #F56C6C;
+    &:hover {
+      background: #f56c6c;
       color: #fff;
     }
   }
 }
-
 </style>
-

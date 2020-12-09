@@ -47,7 +47,7 @@
         <el-table-column width="250" fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="success" icon="el-icon-picture-outline" circle title="绘图" @click="drawBpmn(scope.row)"/>
-            <el-button v-if="scope.row.deploymentId==null&&scope.row.sourceUrl!=null" size="mini" type="primary" icon="el-icon-upload" circle title="部署" @click="deployModel(scope.row)"/>
+            <el-button  size="mini" type="primary" icon="el-icon-upload" circle title="部署" @click="deployModel(scope.row)"/>
             <el-button size="mini" type="danger" icon="el-icon-delete" circle title="删除" @click="deleteModel(scope.row)"/>
 
           </template>
@@ -142,6 +142,7 @@ export default {
     },
     deployModel: function(item) {
       var _this = this
+      debugger
       modelService.getEditorSrc(item.id).then(function(xml) {
         deploymentService.deployment(xml, item.name + '.bpmn20.xml', _this.$store.getters.name).then(function(res) {
           /* 获取流程部署id*/
