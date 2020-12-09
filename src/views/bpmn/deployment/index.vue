@@ -49,7 +49,6 @@
             <el-button size="mini" type="success" icon="el-icon-picture-outline" circle title="绘图" @click="drawBpmn(scope.row)"/>
             <el-button  size="mini" type="primary" icon="el-icon-upload" circle title="部署" @click="deployModel(scope.row)"/>
             <el-button size="mini" type="danger" icon="el-icon-delete" circle title="删除" @click="deleteModel(scope.row)"/>
-
           </template>
         </el-table-column>
       </el-table>

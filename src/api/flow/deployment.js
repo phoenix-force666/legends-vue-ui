@@ -25,6 +25,7 @@ export const deploymentService = {
     param.append('enable-duplicate-filtering', true)
     param.append('deployment-source', 'process application')
     param.append('deployment-name', filename)
+
     param.append('file', new Blob([xml], { type: 'text/xml' }), filename)
     return request.post('/flow/engine-rest/deployment/create', param, { headers: { 'Content-Type': 'multipart/form-data' }})
   },
@@ -35,8 +36,9 @@ export const deploymentService = {
     param.append('deploy-changed-only', true)
     param.append('deployment-source', 'process application')
     param.append('deployment-name', filename)
+   
     param.append('file', new Blob([xml], { type: 'text/xml' }), filename)
-    return request.post('/flow/engine-rest//deployment/' + id + '/redeploy', param, { headers: { 'Content-Type': 'multipart/form-data' }})
+    return request.post('/flow/engine-rest/deployment/' + id + '/redeploy', param, { headers: { 'Content-Type': 'multipart/form-data' }})
   },
   resources: function(id) {
     return request.get('/flow/engine-rest/deployment/' + id + '/resources')
