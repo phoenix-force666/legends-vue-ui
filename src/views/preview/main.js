@@ -23,6 +23,7 @@ function buildLinks(links) {
 }
 
 function init(event) {
+  // debugger
   if (event.data.type === 'refreshFrame') {
     const code = event.data.data
     const attrs = childAttrs[code.generateConf.type]
@@ -32,7 +33,7 @@ function init(event) {
       links = buildLinks(code.links)
     }
 
-    $previewApp.innerHTML = `${links}<style>${code.css}</style><div id="app"></div>`
+    $previewApp.innerHTML = `${links}<style>${code.css}</style><div id="apps"></div>`
 
     if (Array.isArray(code.scripts) && code.scripts.length > 0) {
       loadScriptQueue(code.scripts, () => {
@@ -47,6 +48,15 @@ function init(event) {
 function newVue(attrs, main, html) {
   main = eval(`(${main})`)
   main.template = `<div>${html}</div>`
+
+  // new Vue({
+  //   el: '#app',
+  //   router,
+  //   store,
+  //   i18n,
+  //   render: h => h(App)
+  // })
+
   new Vue({
     components: {
       child: main
@@ -57,5 +67,5 @@ function newVue(attrs, main, html) {
       }
     },
     template: `<div><child ${attrs}/></div>`
-  }).$mount('#app')
+  }).$mount('#apps')
 }
