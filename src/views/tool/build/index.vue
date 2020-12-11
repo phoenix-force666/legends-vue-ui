@@ -78,9 +78,9 @@
 
     <div class="center-board">
       <div class="action-bar">
-        <!-- <el-button icon="el-icon-video-play" type="text" @click="run">
+        <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
-        </el-button> -->
+        </el-button>
         <el-button icon="el-icon-view" type="text" @click="showJson">
           查看json
         </el-button>
@@ -365,6 +365,8 @@ export default {
     generateCode() {
       const { type } = this.generateConf
       this.AssembleFormData()
+      console.log("formData:",this.formData)
+      console.log("type:",type)
       const script = vueScript(makeUpJs(this.formData, type))
       const html = vueTemplate(makeUpHtml(this.formData, type))
       const css = cssStyle(makeUpCss(this.formData))
