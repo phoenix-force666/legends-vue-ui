@@ -15,6 +15,9 @@ import router from './router'
 import permission from './directive/permission'
 import { download } from '@/utils/request'
 
+// 自定义icon
+import './assets/lib/iconfont/iconfont.css';
+import './assets/lib/iconfont/iconfont.js'
 import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
