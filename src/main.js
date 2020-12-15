@@ -24,6 +24,7 @@ import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 import Pagination from "@/components/Pagination";
+import Tinymce from '@/components/tinymce/index.vue'
 //自定义表格工具扩展
 import RightToolbar from "@/components/RightToolbar"
 
@@ -53,6 +54,7 @@ Vue.prototype.msgInfo = function (msg) {
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
+Vue.component('tinymce', Tinymce)
 
 Vue.use(permission)
 

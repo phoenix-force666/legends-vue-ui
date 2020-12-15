@@ -1,44 +1,25 @@
 import request from '@/utils/request'
 
-// 查询表单定义列表
-export function listMyProcess(query) {
-  return request({
-    url: '/process/myProcess/list',
-    method: 'get',
-    params: query
-  })
+// 我提交的流程
+export const myProcessApplyService = {
+  //列表
+  applyList: function (query) {
+    return request({
+      url: '/process/myProcess/apply/list',
+      method: 'get',
+      params: query
+    })
+  },
 }
 
-// 查询表单定义详细
-export function getDefinition(definitionId) {
-  return request({
-    url: '/formEngine/definition/' + definitionId,
-    method: 'get'
-  })
-}
-
-// 新增表单定义
-export function addDefinition(data) {
-  return request({
-    url: '/formEngine/definition',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改表单定义
-export function updateDefinition(data) {
-  return request({
-    url: '/formEngine/definition',
-    method: 'put',
-    data: data
-  })
-}
-
-// 删除表单定义
-export function delDefinition(definitionId) {
-  return request({
-    url: '/formEngine/definition/' + definitionId,
-    method: 'delete'
-  })
+// 待办事项
+export const myProcessApproveServcie={
+  //列表
+  approveList: function (query) {
+    return request({
+      url: '/process/myProcess/approve/list',
+      method: 'get',
+      params: query
+    })
+  }
 }

@@ -77,9 +77,9 @@ export default {
       loadBeautifier(btf => {
         beautifier = btf
         this.beautifierJson = beautifier.js(this.jsonStr, beautifierConf.js)
-        console.log(this.beautifierJson)
 
         loadMonaco(val => {
+          debugger
           monaco = val
           this.setEditorValue('editorJson', this.beautifierJson)
         })
