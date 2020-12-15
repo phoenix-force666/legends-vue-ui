@@ -81,7 +81,7 @@
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="listMyProcess" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="approveList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" type="index" width="50" align="center">
         <template slot-scope="scope">
@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import {listMyProcess} from "@/api/process/myProcess";
+import {myProcessApproveServcie} from "@/api/process/myProcess";
 import { definitionsService } from '@/api/flow/definitions';
 
 import {
@@ -192,7 +192,7 @@ export default {
       // 总条数
       total: 0,
       // 表单部署表格数据
-      listMyProcess: [],
+      approveList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -233,8 +233,8 @@ export default {
     /** 查询表单部署列表 */
     getList() {
       this.loading = true;
-      listMyProcess(this.queryParams).then(response => {
-        this.listMyProcess = response.rows;
+      myProcessApproveServcie.approveList(this.queryParams).then(response => {
+        this.approveList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
