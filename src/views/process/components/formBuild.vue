@@ -180,7 +180,7 @@ import loadBeautifier from "@/utils/loadBeautifier";
 import { saveAs } from "file-saver";
 import beautifier from "js-beautify";
 import ClipboardJS from "clipboard";
-import render from "@/utils/generator/render";
+import render from "@/components/render/render";
 import JsonDrawer from "@/views/tool/build/JsonDrawer";
 import FormDrawer from "@/views/tool/build/FormDrawer";
 import RightPanel from "@/views/tool/build/RightPanel";
@@ -189,7 +189,7 @@ import {
   selectComponents,
   layoutComponents,
   formConf
-} from "@/utils/generator/config";
+} from "@/components/generator/config";
 import {
   exportDefault,
   beautifierConf,
@@ -203,10 +203,10 @@ import {
   vueTemplate,
   vueScript,
   cssStyle
-} from "@/utils/generator/html";
-import { makeUpJs } from "@/utils/generator/js";
-import { makeUpCss } from "@/utils/generator/css";
-import drawingDefalut from "@/utils/generator/drawingDefalut";
+} from "@/components/generator/html";
+import { makeUpJs } from "@/components/generator/js";
+import { makeUpCss } from "@/components/generator/css";
+import drawingDefalut from "@/components/generator/drawingDefalut";
 import logo from "@/assets/logo/logo.png";
 import CodeTypeDialog from "@/views/tool/build/CodeTypeDialog";
 import DraggableItem from "@/views/tool/build/DraggableItem";

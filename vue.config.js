@@ -80,8 +80,8 @@ module.exports = {
       // },
       // '/api/process': {
       //   // target: `http://192.181.4.157:9090/`,
-      //   // target: `http://192.181.4.157:8080/`,
-      //   target: `http://localhost:8080/`,
+      //   target: `http://192.181.4.157:8080/`,
+      //   // target: `http://localhost:8080/`,
       //   changeOrigin: true,
       //   pathRewrite: {
       //     '^/api/process': ''
