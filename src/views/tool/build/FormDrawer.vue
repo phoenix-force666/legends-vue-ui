@@ -60,7 +60,7 @@
               ref="previewPage"
               class="result-wrapper"
               frameborder="0"
-              src="/preview.html"
+              src="preview.html"
               @load="iframeLoad"
             />
             <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
@@ -81,9 +81,9 @@ import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
-} from '@/utils/generator/html'
-import { makeUpJs } from '@/utils/generator/js'
-import { makeUpCss } from '@/utils/generator/css'
+} from '@/components/generator/html'
+import { makeUpJs } from '@/components/generator/js'
+import { makeUpCss } from '@/components/generator/css'
 import { exportDefault, beautifierConf, titleCase } from '@/utils/index'
 import ResourceDialog from './ResourceDialog'
 import loadMonaco from '@/utils/loadMonaco'
@@ -130,7 +130,6 @@ export default {
   created() {
   },
   mounted() {
-
     window.addEventListener('keydown', this.preventDefaultSave)
     const clipboard = new ClipboardJS('.copy-btn', {
       text: trigger => {
@@ -161,7 +160,7 @@ export default {
       this.htmlCode = makeUpHtml(this.formData, type)
       this.jsCode = makeUpJs(this.formData, type)
       this.cssCode = makeUpCss(this.formData)
-     
+
       loadBeautifier(btf => {
         beautifier = btf
         this.htmlCode = beautifier.html(this.htmlCode, beautifierConf.html)
