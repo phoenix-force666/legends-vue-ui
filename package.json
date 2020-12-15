@@ -53,6 +53,7 @@
     "echarts": "4.2.1",
     "element-ui": "2.13.2",
     "file-saver": "2.0.1",
+    "form-gen-parser": "^1.0.3",
     "fuse.js": "3.4.4",
     "ids": "^1.0.0",
     "jquery": "^3.5.1",
