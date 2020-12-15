@@ -7,13 +7,15 @@ import { getToken } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/auth-redirect', '/bind', '/register']
+/* 添加wxlogin的白名单 */
+const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/wxlogin']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
     /* has token*/
-    if (to.path === '/login') {
+    /* 条件增加wx登录 wxlogin 时，如果有token也到根路径 */
+    if ((to.path === '/login') || (to.path === '/wxlogin')) {
       next({ path: '/' })
       NProgress.done()
     } else {

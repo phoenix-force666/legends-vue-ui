@@ -43,6 +43,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/wxlogin',
+    component: (resolve) => require(['@/views/wxlogin'], resolve),
+    hidden: true
+  },
+  {
     path: '/404',
     component: (resolve) => require(['@/views/error/404'], resolve),
     hidden: true

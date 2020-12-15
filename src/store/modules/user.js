@@ -1,4 +1,5 @@
 import { login, logout, getInfo, refreshToken } from '@/api/login'
+import { wxlogin } from '@/api/wxlogin'
 import { getToken, setToken, setExpiresIn, removeToken } from '@/utils/auth'
 
 const user = {
@@ -40,6 +41,24 @@ const user = {
       const uuid = userInfo.uuid
       return new Promise((resolve, reject) => {
         login(username, password, code, uuid).then(res => {
+          let data = res.data
+          setToken(data.access_token)
+          commit('SET_TOKEN', data.access_token)
+          setExpiresIn(data.expires_in)
+          commit('SET_EXPIRES_IN', data.expires_in)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 企业微信扫码登录
+    WxLogin({ commit }, wxLoginForm) {
+      const code = wxLoginForm.code;
+      const appid = wxLoginForm.appid;
+      return new Promise((resolve, reject) => {
+        wxlogin(appid, code).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)
