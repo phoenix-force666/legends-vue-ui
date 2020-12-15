@@ -21,6 +21,11 @@ service.interceptors.request.use(config => {
   if (getToken() && !isToken) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际
   }
+  
+  if(location.host==="localhost"){
+    config.headers['username'] = 'admin'//测试请求头
+  }
+  
   return config
 }, error => {
     console.log(error)
