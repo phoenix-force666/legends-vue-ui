@@ -1,10 +1,10 @@
 <template>
   <div class="login">
-    <el-tabs>
-      <el-tab-pane label="扫码登录" name="wxlogin">
+    <el-tabs v-model="activeName" class="login-tab" stretch=true>
+      <el-tab-pane label="扫码登录" name="wxLoginTab">
         <div id="wxlogin_qrcode"></div>
       </el-tab-pane>
-      <el-tab-pane label="账密登录" name="login">
+      <el-tab-pane label="账密登录" name="loginTab">
         <el-form
           ref="loginForm"
           :model="loginForm"
@@ -117,6 +117,7 @@ export default {
       },
       loading: false,
       redirect: undefined,
+      activeName: 'wxLoginTab',
     };
   },
   watch: {
@@ -188,12 +189,20 @@ export default {
         script.src =
           "http://rescdn.qqmail.com/node/ww/wwopenmng/js/sso/wwLogin-1.0.0.js";
         document.body.appendChild(script);
+
+        console.log(process.env);
+        console.log(process.env.VUE_APP_WX_APPID);
+        console.log(process.env.VUE_APP_WX_AGENTID);
+        console.log(process.env.VUE_APP_WX_LOCAL);
+
         script.onload = () => {
           window.WwLogin({
             id: "wxlogin_qrcode",
-            appid: "wx676a4447212b0774",
-            agentid: "1000005",
-            redirect_uri: encodeURIComponent("http://127.0.0.1/wxlogin?agentid=1000005"),
+            appid: process.env.VUE_APP_WX_APPID,
+            agentid: process.env.VUE_APP_WX_AGENTID,
+            redirect_uri: encodeURIComponent(
+              process.env.VUE_APP_WX_LOCAL + process.env.VUE_APP_WX_AGENTID
+            ),
           });
           resolve();
         };
@@ -212,6 +221,14 @@ export default {
   background-image: url("../assets/image/login-background.jpg");
   background-size: cover;
 }
+.login-tab {
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 400px;
+  height: 458px;
+  text-align: center;
+  border-radius: 4px;
+  box-shadow: 0 0 10px #888;
+}
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
@@ -219,8 +236,8 @@ export default {
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
+  // border-radius: 6px;
+  // background: #ffffff;
   width: 400px;
   padding: 25px 25px 5px 25px;
   .el-input {
@@ -256,7 +273,7 @@ export default {
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: #5f5f5f;
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
