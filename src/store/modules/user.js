@@ -57,8 +57,9 @@ const user = {
     WxLogin({ commit }, wxLoginForm) {
       const code = wxLoginForm.code;
       const appid = wxLoginForm.appid;
+      const agentid = wxLoginForm.agentid;
       return new Promise((resolve, reject) => {
-        wxlogin(appid, code).then(res => {
+        wxlogin(appid, agentid, code).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)

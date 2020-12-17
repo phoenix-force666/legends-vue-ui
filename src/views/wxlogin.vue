@@ -21,6 +21,7 @@ export default {
       wxLoginForm: {
         code: "",
         appid: "",
+        agentid: "",
       },
       loading: false,
       redirect: undefined,
@@ -44,7 +45,9 @@ export default {
     getCode() {
       this.wxLoginForm.code = this.$route.query.code;
       this.wxLoginForm.appid = this.$route.query.appid;
+      this.wxLoginForm.agentid = this.$route.query.agentid;
       console.log(this.code);
+      console.log(this.agentid);
     },
     handleLogin() {
       this.$store
