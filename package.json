@@ -5,6 +5,7 @@
   "author": "legends",
   "license": "legends",
   "scripts": {
+    "local": "vue-cli-service serve --mode local",
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",

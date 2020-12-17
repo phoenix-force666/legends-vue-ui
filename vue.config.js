@@ -10,7 +10,7 @@ function resolve(dir) {
 const name = defaultSettings.title || 'Spring Cloud Legends 管理系统' // 标题
 
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
-const minify = process.env.NODE_ENV === 'development' ? false : {
+const minify = (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local') ? false : {
   collapseWhitespace: true,
   removeComments: true,
   removeRedundantAttributes: true,
@@ -37,6 +37,13 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
   productionSourceMap: false,
+/* 
+  // 微信配置参数
+  wxConfig: {
+    wxAppid: process.env.WX_APPID,
+    wxAgentid: process.env.WX_AGENTID,
+    wxLocal: process.env.WX_LOCAL,
+  }, */
 
   pages: {
     index: {
@@ -174,5 +181,6 @@ module.exports = {
           config.optimization.runtimeChunk('single')
         }
       )
-  }
+  },
+
 }

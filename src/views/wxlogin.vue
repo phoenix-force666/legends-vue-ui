@@ -1,5 +1,14 @@
 <template>
-  <div class="wxlogin"></div>
+  <div class="wxlogin">
+    <lottie-player
+      src="https://assets8.lottiefiles.com/packages/lf20_7z8wtyb0.json"
+      background="transparent"
+      speed="1"
+      style="width: 500px; height: 500px"
+      loop
+      autoplay
+    ></lottie-player>
+  </div>
 </template>
 <script>
 import { getCodeImg } from "@/api/login";
@@ -10,8 +19,8 @@ export default {
   data() {
     return {
       wxLoginForm: {
-      code: "",
-      appid: "",
+        code: "",
+        appid: "",
       },
       loading: false,
       redirect: undefined,
@@ -52,4 +61,11 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
+.wxlogin {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+}
 </style>
