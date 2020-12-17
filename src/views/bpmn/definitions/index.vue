@@ -6,7 +6,6 @@
         <el-input v-model="listQuery.name" :placeholder="$t('flowModel.name')" style="width: 120px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <el-button type="primary" icon="el-icon-search" class="filter-item" @click="handleFilter">查 询</el-button>
         <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="resetForm">重 置</el-button>
-        <el-button type="primary" class="filter-item" icon="el-icon-refresh" @click="aa">aa</el-button>
       </div>
 
       <el-table
@@ -40,9 +39,10 @@
             <span>{{ scope.row.version }}</span>
           </template>
         </el-table-column>
-        <el-table-column width="250" fixed="right" label="操作">
+        <el-table-column width="280" fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleAddOrEdit(scope.row)">绘图</el-button>
+            <el-button size="mini" type="primary" @click="handleFormEdit(scope.row)">编辑表单</el-button>
             <el-button size="mini" type="primary" @click="renderedStartForm(scope.row)">发起流程</el-button>
           </template>
         </el-table-column>
@@ -174,13 +174,24 @@ export default {
         this.listQuery.end_time = data[1]
       }
     },
-    aa(){
-      // definitionsService.aa;
-      const {aa} = definitionsService
-      const bb = new aa()
-      bb()
-    },
+    //绘图
     handleAddOrEdit(item) {
+      var _this = this
+      this.dialogFormVisible = true
+      if (item) {
+        definitionsService.getBPMNXML(item.id).then(function(res) {
+          _this.$nextTick(() => {
+            _this.$refs.bpmndrawer.initCanvas(res.bpmn20Xml, item.id, item.name)
+          })
+        })
+      } else {
+        _this.$nextTick(() => {
+          _this.$refs.bpmndrawer.initCanvas(blankbpmn, item.id.item.name)
+        })
+      }
+    },
+    //编辑表单
+    handleFormEdit(item) {
       var _this = this
       this.dialogFormVisible = true
       if (item) {

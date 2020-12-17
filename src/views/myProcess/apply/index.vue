@@ -302,15 +302,15 @@ export default {
       console.log('row:',row)
       this.open = false;
       this.processTitle = "流程表单";
-      this.processOpen=true;
+   
       var type='file';
       //获取流程表单
       console.log('myProcessApplyService开始')
       myProcessApplyService.getProcessFormByProcessDeploymentId(row.deploymentId).then(res => {
-        console.log('res:',res);
         if(res.code===200){
             this.processFormData=res.data;
             console.log("表单数据：",this.processFormData)
+            this.processOpen=true;
         }
        
       }, err => {
@@ -492,10 +492,6 @@ export default {
         formBtns: true,
         unFocusedComponentBorder: false
       };
-
-      // this.processFormData = formDataJson
-      // vueTemplate(makeUpHtml(formDataJson, type))
-      console.log("html:",this.processFormData);
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
