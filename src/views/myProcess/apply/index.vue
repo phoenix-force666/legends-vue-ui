@@ -304,6 +304,21 @@ export default {
       this.processTitle = "流程表单";
       this.processOpen=true;
       var type='file';
+      //获取流程表单
+      console.log('myProcessApplyService开始')
+      myProcessApplyService.getProcessFormByProcessDeploymentId(row.deploymentId).then(res => {
+        console.log('res:',res);
+        if(res.code===200){
+            this.processFormData=res.data;
+            console.log("表单数据：",this.processFormData)
+        }
+       
+      }, err => {
+        console.log(err)
+      });
+     console.log('myProcessApplyService结束')
+
+
       var formDataJson={
         fields: [
           {
@@ -478,24 +493,9 @@ export default {
         unFocusedComponentBorder: false
       };
 
-      this.processFormData = formDataJson
+      // this.processFormData = formDataJson
       // vueTemplate(makeUpHtml(formDataJson, type))
       console.log("html:",this.processFormData);
-      // =html;
-    
-
-      "<div>" +
-       " <el-form ref=\"elForm\" :model=\"formData\" :rules=\"rules\" size=\"medium\" label-width=\"100px\">" +
-        "  <el-form-item label=\"单行文本\" prop=\"field103\">"+
-         "   <el-input v-model=\"formData.field103\" placeholder=\"请输入单行文本\" clearable :style=\"{width: '100%'}\">"+
-          "  </el-input>" +
-          "</el-form-item>"+
-          "<el-form-item size=\"large\">"+
-            "<el-button type=\"primary\" @click=\"submitForm\">提交</el-button>"+
-            "<el-button @click=\"resetForm\">重置</el-button>"+
-          "</el-form-item>"+
-        "</el-form>"+
-      "</div>";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

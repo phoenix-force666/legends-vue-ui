@@ -10,6 +10,13 @@ export const myProcessApplyService = {
       params: query
     })
   },
+  //获取流程表单
+   getProcessFormByProcessDeploymentId : function(processDeploymentId){
+    return request({
+      url: '/process/processFromRel/form/'+processDeploymentId,
+      method: 'get'
+    })
+  }
 }
 
 // 待办事项
