@@ -116,9 +116,10 @@
 
     <!-- 流程选择 -->
     <el-dialog class="dialog-myProcess-sr" :title="title" :visible.sync="open"  width="100%" append-to-body>
-      <approve></approve>
+      <approve v-if="open" ></approve>
     </el-dialog>
   </div>
+  
 </template>
 
 <script>
@@ -180,7 +181,8 @@ export default {
       processDefId: "",
       //流程实例ID
       processInstId: "",
-      taskId:""
+      taskId:"",
+      taskDefKey:""
     };
   },
   created() {
@@ -238,6 +240,7 @@ export default {
       this.processDefId=row.processDefId;
       this.processInstId=row.processInstId;
       this.taskId=row.taskId;
+      this.taskDefKey=row.taskDefKey;
     },
   }
 };

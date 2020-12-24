@@ -181,7 +181,7 @@
     />
 
     <!-- 添加或修改表单定义对话框 -->
-    <el-dialog :title="title" :visible.sync="open"  fullscreen="true"  append-to-body>
+    <el-dialog :title="title" :visible.sync="open"  :fullscreen="true"  append-to-body>
 
       <el-steps :active="active" finish-status="success">
         <el-step title="基本信息"></el-step>

@@ -56,14 +56,15 @@ export default {
       formData:{},
       //流程实例ID
       processInstId:"",
-      taskId:""
+      taskId:"",
+      taskDefKey:""
     };
   },
   created() {
     var processDefId=this.$parent.$parent.processDefId;
     this.processInstId=this.$parent.$parent.processInstId;
     this.taskId=this.$parent.$parent.taskId;
-    console.log('taskId:',this.$parent.$parent.taskId);
+    this.taskDefKey=this.$parent.$parent.taskDefKey;
     //获取流程表单
     myProcessApplyService.getProcessFormInfoByProcessDefId(processDefId,this.processInstId).then(res => {
        
@@ -102,7 +103,7 @@ export default {
         "processInstId": "",
         // "rejectType": "string",
         // "starter": "string",
-        // "taskDefKey": "string",
+        "taskDefKey": "",
         "taskId": "",
         // "title": "string",
         // "toActId": "string",
@@ -111,8 +112,16 @@ export default {
       };
       data.processInstId=this.processInstId;
       data.taskId=this.taskId;
+      data.taskDefKey=this.taskDefKey;
       console.log('审批请求参数：',data);
-      processService.approve(data);
+      processService.approve(data).then(res => {
+        if(res.code===200){
+          this.$parent.$parent.open=false;
+          this.$parent.$parent.getList();
+        }
+      }, err => {
+        console.log(err)
+      });
     },
 
     //驳回表单
@@ -138,8 +147,17 @@ export default {
       };
       data.processInstId=this.processInstId;
       data.taskId=this.taskId;
+      data.taskDefKey=this.taskDefKey;
       console.log('驳回请求参数：',data);
-      processService.rollback(data);
+      processService.rollback(data).then(res => {
+        console.log('res:',res);
+        if(res.code==='0000'){
+          this.$parent.$parent.open=false;
+          this.$parent.$parent.getList();
+        }
+      }, err => {
+        console.log(err)
+      });
     },
     sumbitProcess(){
 
