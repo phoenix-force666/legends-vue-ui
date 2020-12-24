@@ -85,15 +85,15 @@ module.exports = {
       //     '^/api/formEngine': ''
       //   }
       // },
-      '/api/process': {
-        // target: `http://192.181.4.157:9090/`,
-        // target: `http://192.181.4.157:8080/`,
-        target: `http://localhost:8080/`,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/process': ''
-        }
-      },
+      // '/api/process': {
+      //   // target: `http://192.181.4.157:9090/`,
+      //   // target: `http://192.181.4.157:8080/`,
+      //   target: `http://localhost:8080/`,
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/api/process': ''
+      //   }
+      // },
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         target: `http://192.181.4.157:7070/`,

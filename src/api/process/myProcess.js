@@ -16,7 +16,14 @@ export const myProcessApplyService = {
       url: '/process/processFromRel/form/'+processDeploymentId,
       method: 'get'
     })
-  }
+  },
+   //获取表单及数据
+   getProcessFormInfoByProcessDefId : function(processDefId,processInstId){
+    return request({
+      url: '/process/processFromRel/form/'+processDefId+'/'+processInstId,
+      method: 'get'
+    })
+  },
 }
 
 // 待办事项

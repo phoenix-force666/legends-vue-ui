@@ -17,8 +17,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="流程开始时间" prop="startTime" >
-        <el-date-picker clearable size="small" style="width: 200px"
+      <el-form-item label="流程开始时间" prop="startTime" label-width="98px">
+        <el-date-picker clearable size="small" style="width: 150px"
           v-model="queryParams.startTime"
           type="date"
           value-format="yyyy-MM-dd"
@@ -26,8 +26,8 @@
         </el-date-picker>
       </el-form-item>
 
-       <el-form-item label="流程结束时间" prop="endTime" >
-        <el-date-picker clearable size="small" style="width: 200px"
+       <el-form-item label="流程结束时间" prop="endTime" label-width="98px">
+        <el-date-picker clearable size="small" style="width: 150px"
           v-model="queryParams.endTime"
           type="date"
           value-format="yyyy-MM-dd"
@@ -57,27 +57,6 @@
           v-hasPermi="['process:myProcess:list']"
         >新建流程</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['process:myProcess:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['process:myProcess:remove']"
-        >删除</el-button>
-      </el-col>
-  
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -111,15 +90,15 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['process:myProcess:edit']"
+            v-hasPermi="['process:process:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['process:myProcess:remove']"
-          >删除</el-button>
+            icon="el-icon-refresh-left"
+            @click="handleUndo(scope.row)"
+            v-hasPermi="['process:process:undo']"
+          >撤回</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -158,7 +137,7 @@
     <!-- 流程表单 -->
     <el-dialog :title="processTitle" :visible.sync="processOpen" width="800px" append-to-body>
       <!-- <div v-html = 'processFormData'></div> -->
-      <parser v-if="processOpen" :form-conf="processFormData" @submit="sumbitForm1" />
+      <parser v-if="processOpen" :form-conf="processFormData" @submit="sumbitProcess"/>
     </el-dialog>
     
   </div>
@@ -166,7 +145,8 @@
 
 <script>
 import {myProcessApplyService} from "@/api/process/myProcess";
-import { definitionsService } from '@/api/flow/definitions';
+import {definitionsService} from "@/api/flow/definitions";
+import {processService} from "@/api/process/process";
 
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase ,deepCloneTwo,deepClone
@@ -202,13 +182,14 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-
+      process:{},
       // 流程表单标题
       processTitle:"",
       // 是否显示流程表单弹出层
       processOpen: false,
       //表单数据
       processFormData: "",
+      formId:"",
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -239,35 +220,38 @@ export default {
     getList() {
       this.loading = true;
       myProcessApplyService.applyList(this.queryParams).then(response => {
-        this.applyList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+          this.applyList = response.rows;
+          this.total = response.total;
+          this.loading = false;
       });
     },
-    sumbitForm1(e){
-      console.log("eee",e)
+    //初始化流程
+    sumbitProcess(formData){
+      console.log("formData",formData)
+      this.form={
+            "processDefId": "",
+            "processDefKey": "",
+            "processInstId": "",
+            "formId":"",
+            "formData":{},
+            "variables": {}
+          };
+     
+      this.form.variables=formData;
+      this.form.processDefKey=this.process.key;
+      this.form.formId=this.formId;
+      this.form .formData=formData;
+      console.log('form:',this.form);
+      processService.init(this.form).then(response =>{
+        console.log(response);
+        this.processOpen=false;
+        this.getList();
+      });
     },
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        deployId: null,
-        deployName: null,
-        deployTime: null,
-        status: 0,
-        tenantId: null,
-        source: null,
-        createUser: null,
-        updateUser: null,
-        createTime: null,
-        updateTime: null,
-        version: null
-      };
-      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -287,7 +271,6 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
       this.open = true;
       this.title = "新建流程";
 
@@ -298,26 +281,23 @@ export default {
       })
 
     },
+    //获取流程表单
     createProcess(row){
       console.log('row:',row)
       this.open = false;
-      this.processTitle = "流程表单";
-   
+      this.processTitle = row.name+"流程表单";
+      this.process=row;
       var type='file';
       //获取流程表单
-      console.log('myProcessApplyService开始')
-      myProcessApplyService.getProcessFormByProcessDeploymentId(row.deploymentId).then(res => {
+      myProcessApplyService.getProcessFormByProcessDeploymentId(row.id).then(res => {
         if(res.code===200){
-            this.processFormData=res.data;
-            console.log("表单数据：",this.processFormData)
+            this.formId=res.data.id;
+            this.processFormData=res.data.data;
             this.processOpen=true;
         }
-       
       }, err => {
         console.log(err)
       });
-     console.log('myProcessApplyService结束')
-
 
       var formDataJson={
         fields: [
@@ -503,42 +483,40 @@ export default {
         this.title = "修改表单部署";
       });
     },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.deployId != null) {
-            updateDeployment(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              }
-            });
-          } else {
-            addDeployment(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              }
-            });
-          }
-        }
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const deployIds = row.deployId || this.ids;
-      this.$confirm('是否确认删除表单部署编号为"' + deployIds + '"的数据项?', "警告", {
+    /** 撤回按钮操作 */
+    handleUndo(row) {
+      const title = row.title || this.ids;
+      this.$confirm('是否确认撤回"' + title + '"流程?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delDeployment(deployIds);
+          var data={
+            "jumpType": "",
+            "localVariables": {},
+            "nextUserId": "",
+            "processBusinessKey": "",
+            "processDefId": "",
+            "processDefKey": "",
+            "processInstId": "",
+            "rejectType": "",
+            "starter": "",
+            "taskDefKey": "",
+            "taskId": "",
+            "title": "",
+            "toActId": "",
+            "userId": "",
+            "variables": {}
+          }
+          data.processDefId=row.processDefId;
+          data.processInstId=row.processInstId;
+          data.processDefKey=row.procDefKey;
+          data.taskId=row.taskId;
+          data.taskDefKey=row.taskDefKey;
+          return processService.undo(data);
         }).then(() => {
           this.getList();
-          this.msgSuccess("删除成功");
+          this.msgSuccess("撤回成功");
         }).catch(function() {});
     }
   }
