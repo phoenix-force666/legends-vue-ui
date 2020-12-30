@@ -8,7 +8,7 @@ import { getToken } from '@/utils/auth'
 NProgress.configure({ showSpinner: false })
 
 /* 添加wxlogin的白名单 */
-const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/wxlogin']
+const whiteList = ['/login', '/auth-redirect', '/bind', '/register']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()

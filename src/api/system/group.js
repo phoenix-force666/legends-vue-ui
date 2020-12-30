@@ -42,3 +42,11 @@ export function delGroup(groupId) {
     method: 'delete'
   })
 }
+
+// 获取组用户列表
+export function getGroupUsers(groupId) {
+  return request({
+    url: '/system/user/getByGroup/' + groupId,
+    method: 'get'
+  })
+}
