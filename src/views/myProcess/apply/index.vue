@@ -289,7 +289,7 @@ export default {
       this.process=row;
       var type='file';
       //获取流程表单
-      myProcessApplyService.getProcessFormByProcessDeploymentId(row.id).then(res => {
+      myProcessApplyService.getProcessFormByProcessDefId(row.id).then(res => {
         if(res.code===200){
             this.formId=res.data.id;
             this.processFormData=res.data.data;

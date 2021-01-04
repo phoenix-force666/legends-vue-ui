@@ -90,14 +90,15 @@
         title="流程定义"
         :visible.sync="addProcessVisible"
         width="80%"
+        :v-if="addProcessVisible"
         :before-close="handleClose"
       >
         <process-add :close="close"></process-add>
     </el-dialog>
 
      <!-- 添加或修改表单定义对话框 -->
-    <el-dialog :title="titleForm" :visible.sync="openForm"  :fullscreen="true"  append-to-body>
-        <formGenerator></formGenerator>
+    <el-dialog :title="titleForm" v-if="openForm" :visible.sync="openForm"  :fullscreen="true" :before-close="formClose" append-to-body>
+        <formGenerator :processFormData="processFormData" :editVisible="editVisible" @save="save" ></formGenerator>
     </el-dialog>
 
   </div>
@@ -113,6 +114,8 @@ import blankbpmn from '@/views/bpmn/blankbpmn'
 import {htmlFormUtils} from '@/utils/htmlFormUtils'
 import processAdd from "./processAdd";
 import formGenerator from "@/views/tool/build/index";
+import {myProcessApplyService} from "@/api/process/myProcess";
+import {formEngineService} from "@/api/formEngine/form";
 
 export default {
   name: 'Model',
@@ -139,6 +142,12 @@ export default {
       titleForm: "",
       // 是否显示弹出层(编辑表单)
       openForm: false,
+      processFormData:null,
+      //表单编辑标识
+      editVisible:true,
+      isSave:false,
+      //流程实例ID
+      processDefId:null,
       addProcessVisible: false,
       form:'',
       id:'',
@@ -238,8 +247,24 @@ export default {
     //编辑表单
     handleFormEdit(item) {
       console.log('item:',item)
-      this.openForm = true;
-      this.titleForm = "表单编辑";
+      this.processDefId=item.id;
+      //获取流程表单
+      formEngineService.getFormByProcessDefId(item.id).then(res => {
+        if(res.code===200){
+          console.log('res:',res)
+          if(res.data && res.data.data){
+            this.processFormData=res.data.data;
+          }else{
+            this.isSave=true;
+          }
+          this.openForm = true;
+          this.titleForm = item.name+">表单编辑";
+          console.log('this.processFormData:',this.processFormData);
+        }
+      }, err => {
+        console.log(err)
+      });
+
     },
     exportXML: function(xml, filename, modelId) {
       var _this = this
@@ -250,6 +275,10 @@ export default {
     close() {
       this.addProcessVisible = false;
     },
+    formClose() {
+      this.openForm=false;
+      this.processFormData=null;
+    },
     addClicked(){
         this.addProcessVisible = true;
     },
@@ -259,6 +288,30 @@ export default {
           done();
         })
         .catch(_ => {});
+    },
+    save(formData){
+      console.log('From the child:', formData);
+      var savedata={
+        "data": {},
+        "name": "",
+        "processDefId": "",
+        "processKey": ""
+      };
+
+      savedata.data=formData;
+      savedata.processDefId=this.processDefId;
+      //无表单
+      if(this.isSave){
+        formEngineService.save(savedata).then(res =>{
+          console.log('res',res);
+        });
+        //修改表单
+      }else{
+
+      }
+     
+     
+     
     }
   }
 }

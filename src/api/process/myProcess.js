@@ -11,9 +11,9 @@ export const myProcessApplyService = {
     })
   },
   //获取流程表单
-   getProcessFormByProcessDeploymentId : function(processDeploymentId){
+   getProcessFormByProcessDefId : function(processDefId){
     return request({
-      url: '/process/processFromRel/form/'+processDeploymentId,
+      url: '/process/processFromRel/form/'+processDefId,
       method: 'get'
     })
   },

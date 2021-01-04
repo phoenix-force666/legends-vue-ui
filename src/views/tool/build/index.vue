@@ -3,10 +3,7 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img :src="logo" alt="logo"> Form Generator
-          <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>
-          </a>
+          Form Generator
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">
@@ -44,6 +41,9 @@
 
     <div class="center-board">
       <div class="action-bar">
+        <el-button icon="el-icon-edit" type="text" @click="save">
+          保存
+        </el-button>
         <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
         </el-button>
@@ -167,6 +167,12 @@ export default {
     CodeTypeDialog,
     DraggableItem
   },
+  props:{
+     processFormData: Object,
+     //表单编辑标识
+     editVisible:false,
+     method: { type: Function },
+  },
   data() {
     return {
       logo,
@@ -239,11 +245,20 @@ export default {
     }
   },
   mounted() {
-    if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
-      this.drawingList = drawingListInDB
-    } else {
-      this.drawingList = drawingDefalut
+    if(this.editVisible){
+      if(this.processFormData){
+        this.drawingList=this.processFormData.fields;
+      }else{
+        this.drawingList = drawingDefalut
+      }
+    }else{
+      if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
+        this.drawingList = drawingListInDB
+      } else {
+        this.drawingList = drawingDefalut
+      }
     }
+   
     this.activeFormItem(this.drawingList[0])
     if (formConfInDB) {
       this.formConf = formConfInDB
@@ -307,6 +322,7 @@ export default {
       }
     },
     activeFormItem(currentItem) {
+      console.log('activeFormItem',currentItem)
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
     },
@@ -318,6 +334,7 @@ export default {
       }
     },
     addComponent(item) {
+       console.log('addComponent',currentItem)
       const clone = this.cloneComponent(item)
       this.fetchData(clone)
       this.drawingList.push(clone)
@@ -403,8 +420,6 @@ export default {
       return beautifier.html(html + script + css, beautifierConf.html)
     },
     showJson() {
-              console.log(this.formData)
-        // debugger
       this.AssembleFormData()
       this.jsonDrawerVisible = true
     },
@@ -457,6 +472,11 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
+    },
+    save(){
+      this.AssembleFormData();
+      console.log("formData:",this.formData)
+      this.$emit('save',this.formData);
     }
   }
 }
