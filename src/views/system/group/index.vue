@@ -37,10 +37,8 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="1">
-      </el-col>
-      <el-col :span="19">
-        <div class="group-users">
+      <el-col :span="19" class="group-users">
+        <div>
           <el-form
             :model="queryParams"
             ref="queryForm"
@@ -93,12 +91,39 @@
             :data="users"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="table-expand">
+                  <el-form-item label="账号">
+                    <span>{{ props.row.userId }}</span>
+                  </el-form-item>
+                  <el-form-item label="用户名">
+                    <span>{{ props.row.userName }}</span>
+                  </el-form-item>
+                  <el-form-item label="昵称">
+                    <span>{{ props.row.nickName }}</span>
+                  </el-form-item>
+                  <el-form-item label="邮箱">
+                    <span
+                      ><a :href="'mailto:' + props.row.email">{{
+                        props.row.email
+                      }}</a></span
+                    >
+                  </el-form-item>
+                  <el-form-item label="部门">
+                    <span>{{ props.row.dept.deptName }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
             <el-table-column label="账号" align="center" prop="userId" />
-            <el-table-column label="姓名" align="center" prop="userName" />
-            <el-table-column label="邮箱" align="center" prop="email" />
-            <el-table-column label="部门" align="center" prop="dept" />
-            <el-table-column label="角色" align="center" prop="role" />
+            <el-table-column label="姓名" align="center" prop="nickName" />
+            <el-table-column label="邮箱" align="center" prop="email">
+              <template slot-scope="props">
+                <a :href="'mailto:' + props.row.email">{{ props.row.email }}</a>
+              </template>
+            </el-table-column>
+            <el-table-column label="部门" align="center" prop="dept.deptName" />
             <el-table-column
               label="操作"
               align="center"
@@ -109,13 +134,13 @@
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  @click="handleDelete(scope.row)"
+                  @click="handleDeleteUser(scope.row)"
                   v-hasPermi="['system:group:remove']"
                   >移除</el-button
                 >
-              </template>
-            </el-table-column>
-          </el-table>
+              </template></el-table-column
+            ></el-table
+          >
 
           <pagination
             v-show="total > 0"
@@ -128,7 +153,7 @@
       </el-col>
     </el-row>
     <!-- 添加或修改用户组对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <!--         <el-form-item label="组类型" prop="groupType">
           <el-select v-model="form.groupType" placeholder="请选择组类型">
@@ -161,6 +186,7 @@
 
 <script>
 import { getGroupUsers } from "@/api/system/group";
+import { listUser } from "@/api/system/user";
 import {
   groupTreelist,
   addGroup,
@@ -249,7 +275,7 @@ export default {
     getList() {
       this.loading = true;
       groupTreelist().then((response) => {
-        this.groupOptions = response.groupOptions;
+        this.groupOptions = response.data;
         this.loading = false;
       });
     },
@@ -263,31 +289,25 @@ export default {
       return (
         <span class="custom-tree-node">
           <span>{node.label}</span>
-          <span>
+          <span class="tree-btns">
             <el-button
               size="mini"
-              type="success"
+              icon="el-icon-plus"
               on-click={() => this.addSubGroup(data)}
               circle
-            >
-              添加
-            </el-button>
+            ></el-button>
             <el-button
               size="mini"
-              type="primary"
+              icon="el-icon-edit"
               on-click={() => this.editGroup(node, data)}
               circle
-            >
-              编辑
-            </el-button>
+            ></el-button>
             <el-button
               size="mini"
-              type="danger"
+              icon="el-icon-delete"
               on-click={() => this.delGroup(node, data)}
               circle
-            >
-              删除
-            </el-button>
+            ></el-button>
           </span>
         </span>
       );
@@ -297,7 +317,8 @@ export default {
       console.log(data);
       this.reset();
       this.currentData = data;
-      this.handleAdd();/* 
+      this.form.parentId = data.id;
+      this.handleAdd(); /* 
       const newChild = { id: 1000, label: "testtest", children: [] };
       if (!data.children) {
         this.$set(data, "children", []);
@@ -312,22 +333,60 @@ export default {
       this.currentData = data;
       const groupId = data.id || this.ids;
       getGroup(groupId).then((response) => {
-        this.form = response.data;
+        this.form.group = response.data;
         this.open = true;
         this.title = "修改用户组";
+        this.editGroupUsersById(groupId);
+      });
+    },
+    editGroupUsersById(groupId) {
+      if (this.editAllGroupUsers.length == 0) {
+        listUser().then((response) => {
+          console.log(response.rows);
+          const rows = response.rows;
+          let data = [];
+          rows.forEach((element) => {
+            data.push({
+              key: element.userId,
+              label: element.nickName,
+            });
+          });
+          this.editAllGroupUsers = data;
+        });
+      }
+      getGroupUsers(groupId).then((response) => {
+        console.log(response.rows);
+        const rows = response.rows;
+        let data = [];
+        rows.forEach((element) => {
+          data.push(element.userId);
+        });
+        this.editGroupUsers = data;
       });
     },
     delGroup(node, data) {
       console.log(data);
-      this.currentNode = node;
-      this.currentData = data;
-      this.parentNode = node.parent;
-      const parent = node.parent;
-      const children = parent.data.children || parent.data;
-      const index = children.findIndex((d) => d.id === data.id);
-      deleteGroup(node.id).then((response) => {
-        children.splice(index, 1);
-      });
+      this.$confirm('是否确认删除用户组"' + data.label + '"?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.currentNode = node;
+          this.currentData = data;
+          this.parentNode = node.parent;
+          console.log(node);
+          const parent = node.parent;
+          const children = parent.data.children || parent.data;
+          const index = children.findIndex((d) => d.id === data.id);
+          deleteGroup(data.id).then((response) => {
+            children.splice(index, 1);
+          });
+        })
+        .then(() => {
+          this.getList();
+          this.msgSuccess("删除成功");
+        });
     },
     // 添加一级组
     handleAddLvOne(node) {
@@ -338,7 +397,9 @@ export default {
     // 点击组后展示用户
     showGroupUsers(data) {
       console.log(data);
+      this.form.group.id = data.id;
       getGroupUsers(data.id).then((response) => {
+        this.users = response.rows;
         console.log(response);
       });
     },
@@ -383,6 +444,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const groupId = row.groupId || this.ids;
+      console.log(groupId);
       getGroup(groupId).then((response) => {
         this.form = response.data;
         this.open = true;
@@ -396,32 +458,32 @@ export default {
           if (this.form.groupId != null) {
             updateGroup(this.form).then((response) => {
               //if (response.code === 200) {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
               //}
             });
           } else {
             addGroup(this.form).then((response) => {
               //if (response.code === 200) {
-                console.log(response);
-                this.msgSuccess("新增成功");
+              console.log(response);
+              this.msgSuccess("新增成功");
 
-                const newChild = {
-                  id: response.data,
-                  label: this.form.group.name,
-                  children: [],
-                };
-                if ("0" == this.form.parentId) {
-                  this.groupOptions.push(newChild);
-                } else {
-                  if (!this.currentData.children) {
-                    this.$set(this.currentData, "children", []);
-                  }
-                  this.currentData.children.push(newChild);
-                  //this.getList();
+              const newChild = {
+                id: response.data,
+                label: this.form.group.name,
+                children: [],
+              };
+              if ("0" == this.form.parentId) {
+                this.groupOptions.push(newChild);
+              } else {
+                if (!this.currentData.children) {
+                  this.$set(this.currentData, "children", []);
                 }
-                  this.open = false;
+                this.currentData.children.push(newChild);
+                //this.getList();
+              }
+              this.open = false;
               //}
             });
           }
@@ -429,25 +491,22 @@ export default {
       });
     },
     /** 删除按钮操作 */
-    handleDelete(row) {
-      const groupIds = row.groupId || this.ids;
-      this.$confirm(
-        '是否确认删除用户组编号为"' + groupIds + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      )
-        .then(function () {
-          return this.delGroup(groupIds);
+    handleDeleteUser(row) {
+      console.log(row);
+      this.$confirm('是否从当前组移除用户"' + row.nickName + '"?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          const users = [row.userId];
+          delGroupUsers(this.form.group.id, users);
         })
         .then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
-        .catch(function () {});
+          this.msgSuccess("移除成功");
+          const data = { id: this.form.group.id };
+          this.showGroupUsers(data);
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -512,11 +571,41 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss">
 .group-treelist {
-box-shadow: inset 0 0 6px 0px rgba(0, 0, 0, 0.5);
-    border-radius: 5px;
-    background-color: #FEFEFE;
-    padding: 10px;
-    overflow: auto;
-    height: 100%;
+  box-shadow: 3px 3px 7px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  background-color: #fefefe;
+  padding: 10px;
+  overflow: auto;
+  height: 100%;
+}
+.group-users {
+  margin: 0 0 0 20px;
+}
+.tree-btns {
+  bottom: -4px;
+  display: none;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+.custom-tree-node:hover .tree-btns {
+  display: inline;
+}
+.custom-tree-node {
+  width: 100%;
+  position: relative;
+}
+
+.table-expand {
+  font-size: 0;
+}
+.table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
 }
 </style>

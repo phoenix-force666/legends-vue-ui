@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询流程组树形结构
 export function groupTreelist() {
   return request({
-    url: '/process/group/treelist',
+    url: '/process/lge/groups/treelist',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export function groupTreelist() {
 // 更新流程组树形结构
 export function updateTreelist(groupTree) {
   return request({
-    url: '/process/group/treelist',
+    url: '/process/lge/groups/treelist',
     method: 'post',
     data: groupTree
   })
@@ -20,7 +20,7 @@ export function updateTreelist(groupTree) {
 // 查询【请填写功能名称】列表
 export function listGroup(query) {
   return request({
-    url: '/process/groups',
+    url: '/process/lge/groups',
     method: 'get',
     params: query
   })
@@ -29,7 +29,7 @@ export function listGroup(query) {
 // 查询【请填写功能名称】详细
 export function getGroup(groupId) {
   return request({
-    url: '/process/groups/' + groupId,
+    url: '/process/lge/groups/' + groupId,
     method: 'get'
   })
 }
