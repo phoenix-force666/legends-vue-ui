@@ -258,7 +258,7 @@ export default {
             this.isSave=true;
           }
           this.openForm = true;
-          this.titleForm = item.name+">表单编辑";
+          this.titleForm = item.name+"> 表单编辑";
           console.log('this.processFormData:',this.processFormData);
         }
       }, err => {
@@ -291,27 +291,23 @@ export default {
     },
     save(formData){
       console.log('From the child:', formData);
-      var savedata={
+      var data={
         "data": {},
         "name": "",
         "processDefId": "",
         "processKey": ""
       };
 
-      savedata.data=formData;
-      savedata.processDefId=this.processDefId;
-      //无表单
-      if(this.isSave){
-        formEngineService.save(savedata).then(res =>{
-          console.log('res',res);
-        });
-        //修改表单
-      }else{
-
-      }
-     
-     
-     
+      data.data=formData;
+      data.processDefId=this.processDefId;
+      //更新修改表单
+      formEngineService.upsertById(data).then(res =>{
+        if (res.code === 200) {
+          this.msgSuccess("修改成功");
+          this.openForm = false;
+          this.getList();
+        }
+      });
     }
   }
 }

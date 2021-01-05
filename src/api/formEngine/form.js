@@ -24,4 +24,12 @@ export const formEngineService = {
             data: data
         })
     },
+    // 修改表单
+    upsertById: function(data) {
+        return request({
+        url: '/formEngine/form',
+        method: 'put',
+        data: data
+        })
+    },
 }

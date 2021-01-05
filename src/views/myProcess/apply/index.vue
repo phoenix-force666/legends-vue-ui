@@ -147,6 +147,7 @@
 import {myProcessApplyService} from "@/api/process/myProcess";
 import {definitionsService} from "@/api/flow/definitions";
 import {processService} from "@/api/process/process";
+import {formEngineService} from "@/api/formEngine/form";
 
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase ,deepCloneTwo,deepClone
@@ -289,7 +290,7 @@ export default {
       this.process=row;
       var type='file';
       //获取流程表单
-      myProcessApplyService.getProcessFormByProcessDefId(row.id).then(res => {
+      formEngineService.getFormByProcessDefId(row.id).then(res => {
         if(res.code===200){
             this.formId=res.data.id;
             this.processFormData=res.data.data;

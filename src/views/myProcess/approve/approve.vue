@@ -1,27 +1,29 @@
 <template>
-   <div class="container">
-      <el-tabs type="border-card">
-        <el-tab-pane>
-          <span slot="label"><i class="el-icon-date"></i> 流程表单</span>
-           <parser v-if="open"  ref="parser" :form-conf="processForm" @submit="sumbitProcess"/>
-        </el-tab-pane>
-        <el-tab-pane label="流程图">流程图</el-tab-pane>
-        <el-tab-pane label="审批记录">审批记录</el-tab-pane>
-      </el-tabs>
+  <div class="container">
+    <el-tabs type="border-card">
+      <el-tab-pane>
+        <span slot="label"><i class="el-icon-date"></i> 流程表单</span>
+        <parser v-if="open"  ref="parser" :form-conf="processForm" @submit="sumbitProcess"/>
+      </el-tab-pane>
+      <el-tab-pane label="流程图">流程图</el-tab-pane>
+      <el-tab-pane label="审批记录">审批记录</el-tab-pane>
+    </el-tabs>
 
-      <div>
-        <el-button type="primary" class = "topBtn"  size="small" style="margin-top: 12px;" @click="approve">通过</el-button>
-          <el-button type="danger"  class = "topBtn"  size="small" style="margin-top: 12px;" @click="rollback">驳回</el-button>
-          <el-button class = "topBtn"  size="small" style="margin-top: 12px;" @click="cancel">取消</el-button>
-      </div>
+    <div>
+      <!-- <tinymce v-model="approvalComments" placeholder="请输入签字意见" :height="300"></tinymce> -->
+      <el-input v-model="approvalComments" type="textarea" placeholder="请输入审批意见" :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
+      <el-button type="primary" class = "topBtn"  size="small" style="margin-top: 12px;" @click="approve">通过</el-button>
+      <el-button type="danger"  class = "topBtn"  size="small" style="margin-top: 12px;" @click="rollback">驳回</el-button>
+      <el-button class = "topBtn"  size="small" style="margin-top: 12px;" @click="cancel">取消</el-button>
+    </div>
   </div>
-  
 </template>
 
 <script>
 import Parser from '@/components/parser'
 import {myProcessApplyService} from "@/api/process/myProcess";
 import {processService} from "@/api/process/process";
+import {formEngineService} from "@/api/formEngine/form";
 
 export default {
   name: "myProcess",
@@ -57,16 +59,18 @@ export default {
       //流程实例ID
       processInstId:"",
       taskId:"",
-      taskDefKey:""
+      taskDefKey:"",
+      processDefId:"",
+      approvalComments:""
     };
   },
   created() {
-    var processDefId=this.$parent.$parent.processDefId;
+    this.processDefId=this.$parent.$parent.processDefId;
     this.processInstId=this.$parent.$parent.processInstId;
     this.taskId=this.$parent.$parent.taskId;
     this.taskDefKey=this.$parent.$parent.taskDefKey;
     //获取流程表单
-    myProcessApplyService.getProcessFormInfoByProcessDefId(processDefId,this.processInstId).then(res => {
+    formEngineService.getFormInfoByProcessDefId(this.processDefId,this.processInstId).then(res => {
        
       if(res.code===200){
         if(res.data){
@@ -98,7 +102,7 @@ export default {
         "localVariables": {},
         // "nextUserId": "string",
         // "processBusinessKey": "string",
-        // "processDefId": "string",
+        "processDefId": "",
         // "processDefKey": "string",
         "processInstId": "",
         // "rejectType": "string",
@@ -113,9 +117,11 @@ export default {
       data.processInstId=this.processInstId;
       data.taskId=this.taskId;
       data.taskDefKey=this.taskDefKey;
-      console.log('审批请求参数：',data);
+      data.processDefId=this.processDefId;
+      //审批通过
+      data.variables=this.$refs.parser.formData;
       processService.approve(data).then(res => {
-        if(res.code===200){
+        if(res.code==='0000'){
           this.$parent.$parent.open=false;
           this.$parent.$parent.getList();
         }
